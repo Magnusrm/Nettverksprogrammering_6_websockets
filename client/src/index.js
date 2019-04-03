@@ -46,6 +46,7 @@ class Menu extends Component {
 
 
     handleSubmit(event) {
+        console.log('sbmit')
         this.socket = new WebSocket('ws://localhost:3001');
         this.emit = this.emit.bind(this);
 

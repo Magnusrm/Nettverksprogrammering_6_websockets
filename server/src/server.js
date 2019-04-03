@@ -17,32 +17,41 @@ let app = express();
 
 app.use(express.static(public_path));
 app.use(express.json()); // For parsing application/json
+var http_server = express();
 
+//This resource makes it possible to download and start the WebSocket client
+http_server.use(express.static(__dirname + "/../client"));
 
 
 let websocket = new WebSocket.Server({port: 3001});
 
-websocket.on('connction',(connection) => {
-  console.log('A connection is now open');
+function getName(sentence) {
+    var n = sentence.split(" ");
+    return n[n.length - 1];
 
-  connection.on('message', (message) => {
+}
 
-    console.log('Client has sent a message: ' + message);
-    websocket.clients.map(e => {
-      if(e.readyState === WebSocket.OPEN){
-        e.send(JSON.stringify('Yo! whazzuuup client. You sent this message ' + message));
-      }
+websocket.on('connection', (connection) => {
+    console.log('Opened a connection');
+
+    connection.on('message', (message) => {
+        console.log("message received from a client: " + message);
+
+
+        websocket.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+                client.send('hello ' + getName(message));
+            }
+        });
     });
-  });
 
-  connection.on('close',() => {
-    console.log('Closed the connection');
-  });
+    connection.on('close', () => {
+        console.log("Closed a connection");
+    });
 
-  connection.on('error', (error) => {
-    console.log('got error: ' + error.message);
-  })
-
+    connection.on('error', (error) => {
+        console.error("Error: " + error.message);
+    });
 });
 
 
