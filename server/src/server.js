@@ -35,7 +35,7 @@ websocket.on('connection', (connection) => {
     console.log('Opened a connection');
 
     connection.on('message', (message) => {
-        console.log("message received from a client: " + message);
+        console.log("Yoooo, wazzap: " + message);
 
 
         websocket.clients.forEach((client) => {
