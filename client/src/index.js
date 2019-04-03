@@ -18,31 +18,60 @@ import createHashHistory from 'history/createHashHistory';
 const history = createHashHistory(); // Use history.push(...) to programmatically change path, for instance after successfully saving a student
 
 class Menu extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            open: false,
+            connected: false
+        };
+        this.socket = new WebSocket('ws://localhost:3001');
+        this.socket.onopen = () => {
+            this.setState({connected: true})
+        };
+        this.emit = this.emit.bind(this);
+    }
+
+    emit() {
+        this.setState(prevState => ({
+            open: !prevState.open
+        }))
+        this.socket.send("It worked!")
+    }
+
+    componentDidMount() {
+        this.socket.onopen = () => {
+            this.socket.send(JSON.stringify({type: 'greet', payload: 'Hello Mr. Server!'}));
+
+            this.setState({
+                connected : this.state.connected
+            })
+        };
+        this.socket.onmessage = ({data}) => console.log(data);
+    }
+
   render() {
-    return (
-      <table>
-        <tbody>
-          <tr>
-            <td>
-              <NavLink activeStyle={{ color: 'darkblue' }} exact to="/">
-                React example
-              </NavLink>
-            </td>
-            <td>
-              <NavLink activeStyle={{ color: 'darkblue' }} to="/students">
-                Students
-              </NavLink>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    );
+      let connectedLabel;
+      if (this.state.connected) {
+          connectedLabel = <h2>connected</h2>;
+      } else {
+          connectedLabel = <h2>not connected</h2>;
+      }
+
+      return (
+          <div className="App">
+
+              <header className="App-header">
+                  {connectedLabel}
+              </header>
+          </div>
+      );
   }
 }
 
 class Home extends Component {
   render() {
-    return <div>React example with component state</div>;
+    return <div></div>;
   }
 }
 
