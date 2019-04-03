@@ -55,21 +55,17 @@ websocket.on('connection', (connection) => {
 });
 
 
-
-
-
-
 // Hot reload application when not in production environment
 if (process.env.NODE_ENV !== 'production') {
-  let reloadServer = reload(app);
-  fs.watch(public_path, () => reloadServer.reload());
+    let reloadServer = reload(app);
+    fs.watch(public_path, () => reloadServer.reload());
 }
 
 // The listen promise can be used to wait for the web server to start (for instance in your tests)
 export let listen = new Promise<void>((resolve, reject) => {
-  app.listen(3000, error => {
-    if (error) reject(error.message);
-    console.log('Server started');
-    resolve();
-  });
+    app.listen(3000, error => {
+        if (error) reject(error.message);
+        console.log('Server started');
+        resolve();
+    });
 });
