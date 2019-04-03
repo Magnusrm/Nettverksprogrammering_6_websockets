@@ -41,7 +41,7 @@ app.put('/students', (req: Request, res: Response) => {
     { where: { id: req.body.id } }
   ).then(count => (count ? res.sendStatus(200) : res.sendStatus(404)));
 });
- 
+
 
 
 
